@@ -1,0 +1,67 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/colmr/vis_class/master/London2012Vega.csv",
+    "format": {
+      "type": "csv"
+    }
+  },
+  "transform": [
+    {
+      "filter": {
+        "field": "Weight",
+        "gt": 0
+      }
+    },
+    {
+      "filter": {
+        "field": "Height",
+        "gt": 0
+      }
+    },
+    {
+      "filter": {
+        "field": "Sport",
+        "equal": "Swimming"
+      }
+    }
+  ],
+  "vconcat": [
+    {
+      "mark": {
+        "type": "bar"
+      },
+      "encoding": {
+        "y": {
+          "field": "Name",
+          "stack": false,
+          "type": "quantitative",
+          "aggregate": "count"
+        },
+        "x": {
+          "field": "Weight",
+          "type": "quantitative",
+          "bin": {
+            "maxbins": 20
+          },
+          "axis": null
+        }
+      }
+    },
+    {
+      "mark": {
+        "type": "tick"
+      },
+      "encoding": {
+        "x": {
+          "field": "Weight",
+          "type": "quantitative",
+          "scale": {
+            "zero": false
+          }
+        }
+      }
+    }
+  ],
+  "config": {}
+}

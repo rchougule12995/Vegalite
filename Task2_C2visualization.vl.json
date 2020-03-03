@@ -1,0 +1,67 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/colmr/vis_class/master/London2012Vega.csv",
+    "format": {
+      "type": "csv"
+    }
+  },
+  "transform": [
+    {
+      "filter": {
+        "field": "Weight",
+        "gt": 0
+      }
+    },
+    {
+      "filter": {
+        "field": "Height",
+        "gt": 0
+      }
+    },
+    {
+      "calculate": "datum.Weight / ( datum.Height / 100 * datum.Height / 100)",
+      "as": "BMI"
+    }
+  ],
+  "spec": {
+    "mark": {
+      "type": "bar",
+      "color": "red"
+    },
+    "encoding": {
+      "y": {
+        "stack": false,
+        "type": "quantitative",
+        "aggregate": "count"
+      },
+      "x": {
+        "field": {
+          "repeat": "column"
+        },
+        "type": "quantitative",
+        "bin": {
+          "maxbins": 75
+        }
+      },
+      "color": {
+        "field": "Sex",
+        "type": "nominal",
+        "scale": {
+          "range": [
+            "#8101FA",
+            "#00C7A9"
+          ]
+        }
+      }
+    }
+  },
+  "repeat": {
+    "column": [
+      "Weight",
+      "Height",
+      "BMI"
+    ]
+  },
+  "config": {}
+}

@@ -1,0 +1,308 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "title": {
+    "text": "Irish Primary School Explorer",
+    "fontSize": 20,
+    "anchor": "middle",
+    "fontWeight": 900
+  },
+  "data": {
+    "url": "https://raw.githubusercontent.com/colmr/vis_class/master/Ireland_custom_topjson.json",
+    "format": {
+      "type": "topojson",
+      "feature": "IRL_adm1"
+    }
+  },
+  "transform": [
+    {
+      "from": {
+        "data": {
+          "url": "https://raw.githubusercontent.com/colmr/vis_class/master/primary_schools.csv"
+        },
+        "key": "County"
+      }
+    }
+  ],
+  "hconcat": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/colmr/vis_class/master/primary_schools.csv",
+        "format": {
+          "type": "csv"
+        }
+      },
+      "selection": {
+        "CountySelect": {
+          "type": "multi",
+          "fields": [
+            "County"
+          ],
+          "on": "click"
+        },
+        "SchoolTypeSelect": {
+          "type": "multi",
+          "bind": "legend",
+          "encodings": [
+            "color"
+          ]
+        }
+      },
+      "width": 100,
+      "height": 600,
+      "mark": "bar",
+      "transform": [
+        {
+          "filter": {
+            "selection": "SchoolTypeSelect"
+          }
+        },
+        {
+          "filter": {
+            "selection": "Total_Students"
+          }
+        }
+      ],
+      "encoding": {
+        "color": {
+          "type": "nominal",
+          "field": "Sex",
+          "scale": {
+            "domain": [
+              "Boys",
+              "Girls",
+              "Mixed"
+            ],
+            "range": [
+              "#00C7A9",
+              "#8101FA",
+              "#4169E1"
+            ]
+          }
+        },
+        "opacity": {
+          "condition": {
+            "selection": "CountySelect",
+            "value": 0.9
+          },
+          "value": 0.2
+        },
+        "order": {
+          "field": "Sex",
+          "type": "quantitative",
+          "sort": "descending"
+        },
+        "x": {
+          "type": "quantitative",
+          "aggregate": "count",
+          "axis": {
+            "title": "Number of Schools",
+            "titleFontSize": 12
+          }
+        },
+        "y": {
+          "type": "nominal",
+          "field": "County",
+          "axis": {
+            "title": null,
+            "labelFontSize": 12
+          }
+        }
+      }
+    },
+    {
+      "vconcat": [
+        {
+          "width": 400,
+          "height": 450,
+          "projection": {
+            "type": "conicConformal"
+          },
+          "layer": [
+            {
+              "mark": {
+                "type": "geoshape",
+                "stroke": "white",
+                "color": "lightgray"
+              }
+            },
+            {
+              "data": {
+                "url": "https://raw.githubusercontent.com/colmr/vis_class/master/primary_schools.csv",
+                "format": {
+                  "type": "csv"
+                }
+              },
+              "selection": {
+                "Students": {
+                  "type": "multi",
+                  "encodings": [
+                    "color"
+                  ]
+                }
+              },
+              "transform": [
+                {
+                  "filter": {
+                    "selection": "SchoolTypeSelect"
+                  }
+                },
+                {
+                  "filter": {
+                    "selection": "CountySelect"
+                  }
+                },
+                {
+                  "filter": {
+                    "selection": "Students"
+                  }
+                },
+                {
+                  "filter": {
+                    "selection": "Total_Students"
+                  }
+                }
+              ],
+              "mark": "circle",
+              "encoding": {
+                "longitude": {
+                  "field": "Long",
+                  "type": "quantitative"
+                },
+                "latitude": {
+                  "field": "Lat",
+                  "type": "quantitative"
+                },
+                "size": {
+                  "field": "Total",
+                  "type": "quantitative",
+                  "scale": {
+                    "type": "threshold",
+                    "domain": [
+                      251,
+                      501,
+                      750
+                    ],
+                    "range": [
+                      5,
+                      30,
+                      50,
+                      80
+                    ]
+                  },
+                  "legend": {
+                    "direction": "vertical"
+                  }
+                },
+                "color": {
+                  "field": "Sex",
+                  "type": "nominal",
+                  "scale": {
+                    "domain": [
+                      "Boys",
+                      "Girls",
+                      "Mixed"
+                    ],
+                    "range": [
+                      "#00C7A9",
+                      "#8101FA",
+                      "#4169E1"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/colmr/vis_class/master/primary_schools.csv",
+            "format": {
+              "type": "csv"
+            }
+          },
+          "width": 400,
+          "height": 120,
+          "layer": [
+            {
+              "selection": {
+                "Total_Students": {
+                  "type": "interval",
+                  "encodings": [
+                    "x"
+                  ]
+                }
+              },
+              "mark": {
+                "type": "bar",
+                "color": "lightgrey"
+              },
+              "transform": [
+                {
+                  "filter": {
+                    "selection": "SchoolTypeSelect"
+                  }
+                },
+                {
+                  "filter": {
+                    "selection": "CountySelect"
+                  }
+                }
+              ]
+            },
+            {
+              "mark": {
+                "type": "bar",
+                "color": "black"
+              },
+              "transform": [
+                {
+                  "filter": {
+                    "selection": "SchoolTypeSelect"
+                  }
+                },
+                {
+                  "filter": {
+                    "selection": "CountySelect"
+                  }
+                },
+                {
+                  "filter": {
+                    "selection": "Total_Students"
+                  }
+                }
+              ]
+            }
+          ],
+          "encoding": {
+            "y": {
+              "type": "quantitative",
+              "field": "Off_Name",
+              "aggregate": "count",
+              "axis": {
+                "title": "Schools",
+                "titleFontSize": 12
+              }
+            },
+            "x": {
+              "field": "Total",
+              "type": "quantitative",
+              "bin": {
+                "minstep": 20,
+                "maxbins": 80,
+                "extent": [
+                  0,
+                  1000
+                ]
+              },
+              "axis": {
+                "title": "Number of Students",
+                "titleFontSize": 12
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "config": {}
+}
